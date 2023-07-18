@@ -1,9 +1,9 @@
 import React from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
+import Icon from '../../Atoms/Icons';
 import Input from '../../Atoms/Input';
 import CloseButton from '../Buttons/CloseButton';
 import QuestionButton from '../Buttons/QuestionButton';
-import Icon from '../../Atoms/Icons';
 
 interface ISearchForm {
   value: string;
@@ -19,7 +19,7 @@ export default function SearchForm({ value, isOnFocused, inputRef, onHandler }: 
           <Icon icon="search" size={15} color="#6a737b" viewBox="2 2 20 20" />
           <span>질환명을 입력해 주세요.</span>
         </SInputMsgBox>
-        <SInputBox hasvalue={!!value}>
+        <SInputBox hasvalue={!!value} focused={isOnFocused}>
           <Input type="text" onChange={onHandler} value={value} ref={inputRef} />
           <CloseButton />
         </SInputBox>
@@ -55,17 +55,22 @@ const SLabel = styled.label`
 const SInputMsgBox = styled.div<{ focused: boolean; hasvalue: boolean }>`
   opacity: ${({ focused }) => (focused ? '0' : '1')};
   display: flex;
+  ${({ hasvalue }) => css`
+    > svg,
+    span {
+      opacity: ${hasvalue ? '0' : '1'};
+    }
+  `}
   > svg {
     display: inline-block;
     vertical-align: middle;
   }
   > span {
-    opacity: ${({ hasvalue }) => (hasvalue ? '0' : '1')};
     color: #6a737b;
     margin-left: 10px;
   }
 `;
-const SInputBox = styled.div<{ hasvalue: boolean }>`
+const SInputBox = styled.div<{ hasvalue: boolean; focused: boolean }>`
   position: absolute;
   display: flex;
   width: 100%;
@@ -77,6 +82,6 @@ const SInputBox = styled.div<{ hasvalue: boolean }>`
     background-color: transparent;
   }
   > button {
-    opacity: ${({ hasvalue }) => (hasvalue ? '1' : '0')};
+    opacity: ${({ hasvalue, focused }) => (hasvalue && focused ? '1' : '0')};
   }
 `;
