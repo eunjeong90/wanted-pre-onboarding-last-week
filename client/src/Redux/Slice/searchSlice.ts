@@ -13,7 +13,7 @@ export interface ISearchItem {
 interface ISearchCache {
   query: string;
   list: ISearchItem[];
-  expireTime: Date;
+  expireTime: string;
 }
 interface ISearchState {
   status: 'idle' | 'loading' | 'succeeded' | 'failed';
@@ -34,7 +34,7 @@ export const getSearchQuery = createAsyncThunk(
   async (query: string, { getState }): Promise<ISearchItem[]> => {
     const state = getState() as RootState;
     const cachedData = state.search.data.find((item) => item.query === query);
-    if (cachedData && cachedData.expireTime > new Date()) return cachedData.list.slice(0, 7);
+    if (cachedData && cachedData.expireTime > new Date().toISOString()) return cachedData.list.slice(0, 7);
     else {
       const response = await apiService.getSearchQuery(query);
       console.info('calling api');
@@ -61,10 +61,12 @@ const searchSlice = createSlice({
       .addCase(getSearchQuery.fulfilled, (state, action) => {
         state.status = 'idle';
         const isCached = state.data.some((item) => item.query === action.meta.arg);
+        const expireTime = new Date();
+        expireTime.setMinutes(expireTime.getMinutes() + 5);
         if (!isCached) {
           const expireTime = new Date();
           expireTime.setMinutes(expireTime.getMinutes() + 5);
-          state.data.push({ query: action.meta.arg, list: action.payload, expireTime });
+          state.data.push({ query: action.meta.arg, list: action.payload, expireTime: expireTime.toISOString() });
         }
       });
   },
