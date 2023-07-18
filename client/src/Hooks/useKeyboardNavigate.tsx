@@ -2,7 +2,6 @@ import { useEffect, useState, useCallback, Dispatch, SetStateAction } from 'reac
 
 interface KeyboardNavigationParams {
   maxIndex: number;
-  // onEnter: () => void;
   getKeyword: (index: number) => string;
 }
 
@@ -19,19 +18,16 @@ function useKeyboardNavigation({
   // onEnter,
   getKeyword,
 }: KeyboardNavigationParams): KeyboardNavigationReturn {
-  const [focusIndex, setFocusIndex] = useState<number>(-1);
+  const [focusIndex, setFocusIndex] = useState<number>(-2);
   const [isAutoSearch, setIsAutoSearch] = useState<boolean>(false);
   const [autoSearchKeyword, setAutoSearchKeyword] = useState<string>('');
 
   const onKeyDown = useCallback(
     (event: KeyboardEvent) => {
       switch (event.key) {
-        // case 'Enter':
-        //   onEnter();
-        //   break;
         case 'ArrowDown':
           setIsAutoSearch(true);
-          setFocusIndex((prevIndex) => (prevIndex < maxIndex - 1 ? prevIndex + 1 : prevIndex));
+          setFocusIndex((prevIndex) => (prevIndex < maxIndex ? prevIndex + 1 : prevIndex));
           setAutoSearchKeyword(getKeyword(focusIndex + 1));
           break;
         case 'ArrowUp':

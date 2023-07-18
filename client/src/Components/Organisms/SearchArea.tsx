@@ -1,16 +1,16 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { styled } from 'styled-components';
 import { useAppDispatch } from '../../Redux/store';
 import { ISearchItem, getSearchQuery } from '../../Redux/Slice/searchSlice';
 import useDebounce from '../../Hooks/useDebounce';
 import useInput from '../../Hooks/useInput';
-import { styled } from 'styled-components';
+import useKeyboardNavigation from '../../Hooks/useKeyboardNavigate';
 import SearchHistoryBox from '../Molecules/Search/SearchHistoryBox';
 import SearchForm from '../Molecules/Search/SearchForm';
-import useKeyboardNavigation from '../../Hooks/useKeyboardNavigate';
 
 export default function SearchArea() {
   const dispatch = useAppDispatch();
-  const [value, onHandler] = useInput('');
+  const [value, setValue, onHandler] = useInput('');
   const [searchList, setSearchList] = useState<ISearchItem[] | undefined>([]);
 
   const getSearchList = () => {
@@ -31,7 +31,7 @@ export default function SearchArea() {
 
   useEffect(() => {
     searchDebounce();
-  }, [searchDebounce, value]);
+  }, [value]);
 
   const inputRef = useRef<HTMLInputElement>(null);
   const [isOnFocused, setIsOnFocused] = useState(false);
@@ -55,23 +55,25 @@ export default function SearchArea() {
 
   const getKeyword = (index: number) => (searchList && searchList[index]?.sickNm) || '';
   const maxIndex = searchList?.length || 0;
-
-  const { focusIndex, isAutoSearch } = useKeyboardNavigation({
+  const { focusIndex } = useKeyboardNavigation({
     maxIndex,
-    // onEnter,
     getKeyword,
   });
 
+  const handleResetValue = () => {
+    setValue('');
+  };
+
   return (
     <SSearchArea>
-      <SearchForm value={value} isOnFocused={isOnFocused} onHandler={onHandler} inputRef={inputRef} />
-      <SearchHistoryBox
+      <SearchForm
         value={value}
         isOnFocused={isOnFocused}
-        searchList={searchList}
-        isKeySelected={isAutoSearch}
-        selectedIndex={focusIndex}
+        onHandler={onHandler}
+        inputRef={inputRef}
+        handleResetValue={handleResetValue}
       />
+      <SearchHistoryBox value={value} isOnFocused={isOnFocused} searchList={searchList} selectedIndex={focusIndex} />
     </SSearchArea>
   );
 }

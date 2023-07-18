@@ -7,16 +7,9 @@ interface ISearchHistoryBox {
   value: string;
   isOnFocused: boolean;
   searchList: ISearchItem[] | undefined;
-  isKeySelected: boolean;
   selectedIndex: number;
 }
-export default function SearchHistoryBox({
-  searchList,
-  value,
-  isOnFocused,
-  isKeySelected,
-  selectedIndex,
-}: ISearchHistoryBox) {
+export default function SearchHistoryBox({ searchList, value, isOnFocused, selectedIndex }: ISearchHistoryBox) {
   return (
     <SSearchHistoryBox className={isOnFocused ? '' : 'a11y-hidden'}>
       <SInner>
@@ -27,9 +20,9 @@ export default function SearchHistoryBox({
           {value ? (
             searchList && searchList.length > 0 ? (
               searchList?.map((item, index) => (
-                <SListItem isKeySelected={index === selectedIndex}>
+                <SListItem key={item.sickCd + index} isKeySelected={index === selectedIndex}>
                   <Icon icon="search" size={15} color="#6a737b" viewBox="2 2 20 20" />
-                  <p key={item.sickCd + index}>{item.sickNm}</p>
+                  <p>{item.sickNm}</p>
                 </SListItem>
               ))
             ) : (
