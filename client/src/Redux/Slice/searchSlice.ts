@@ -20,6 +20,7 @@ interface ISearchState {
   error: string | null;
   data: ISearchCache[];
   cache: Record<string, ISearchItem[]>;
+  history: string[];
 }
 
 const initialState: ISearchState = {
@@ -27,6 +28,7 @@ const initialState: ISearchState = {
   error: null,
   data: [],
   cache: {},
+  history: [],
 };
 
 export const getSearchQuery = createAsyncThunk(
@@ -68,6 +70,8 @@ const searchSlice = createSlice({
           expireTime.setMinutes(expireTime.getMinutes() + 5);
           state.data.push({ query: action.meta.arg, list: action.payload, expireTime: expireTime.toISOString() });
         }
+        state.history.unshift(action.meta.arg);
+        state.history = state.history.slice(0, 5);
       });
   },
 });

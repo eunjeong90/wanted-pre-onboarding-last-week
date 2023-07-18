@@ -1,5 +1,7 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 import styled from 'styled-components';
+import { RootState } from '../../../Redux/store';
 import { ISearchItem } from '../../../Redux/Slice/searchSlice';
 import Icon from '../../Atoms/Icons';
 
@@ -10,6 +12,7 @@ interface ISearchHistoryBox {
   selectedIndex: number;
 }
 export default function SearchHistoryBox({ searchList, value, isOnFocused, selectedIndex }: ISearchHistoryBox) {
+  const searchHistory = useSelector((state: RootState) => state.search.history);
   return (
     <SSearchHistoryBox className={isOnFocused ? '' : 'a11y-hidden'}>
       <SInner>
@@ -29,7 +32,18 @@ export default function SearchHistoryBox({ searchList, value, isOnFocused, selec
               <SPara>검색어 없음</SPara>
             )
           ) : (
-            <SPara>검색어가 없습니다</SPara>
+            <div>
+              {searchHistory ? (
+                searchHistory.map((his, index) => (
+                  <SListItem key={his + index}>
+                    <Icon icon="search" size={15} color="#6a737b" viewBox="2 2 20 20" />
+                    <p>{his}</p>
+                  </SListItem>
+                ))
+              ) : (
+                <SPara>검색어가 없습니다</SPara>
+              )}
+            </div>
           )}
         </STopBox>
         <SBottomBox value={value}>
@@ -62,11 +76,12 @@ const SListDiv = styled.div`
   display: flex;
   padding: 10px 20px;
 `;
-const SListItem = styled(SListDiv)<{ isKeySelected: boolean }>`
+const SListItem = styled(SListDiv)<{ isKeySelected?: boolean }>`
   background-color: ${({ isKeySelected }) => (isKeySelected ? '#dbe4eb' : '#fff')};
   padding: 10px 25px;
   > p {
     margin-left: 10px;
+    cursor: pointer;
   }
 `;
 const SSpan = styled.span`
