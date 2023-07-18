@@ -6,6 +6,7 @@ import useInput from '../../Hooks/useInput';
 import { styled } from 'styled-components';
 import SearchHistoryBox from '../Molecules/Search/SearchHistoryBox';
 import SearchForm from '../Molecules/Search/SearchForm';
+import useKeyboardNavigation from '../../Hooks/useKeyboardNavigate';
 
 export default function SearchArea() {
   const dispatch = useAppDispatch();
@@ -25,6 +26,7 @@ export default function SearchArea() {
       fetchData();
     }
   };
+
   const searchDebounce = useDebounce(getSearchList, 300);
 
   useEffect(() => {
@@ -51,10 +53,25 @@ export default function SearchArea() {
     };
   }, []);
 
+  const getKeyword = (index: number) => (searchList && searchList[index]?.sickNm) || '';
+  const maxIndex = searchList?.length || 0;
+
+  const { focusIndex, isAutoSearch } = useKeyboardNavigation({
+    maxIndex,
+    // onEnter,
+    getKeyword,
+  });
+
   return (
     <SSearchArea>
       <SearchForm value={value} isOnFocused={isOnFocused} onHandler={onHandler} inputRef={inputRef} />
-      <SearchHistoryBox value={value} isOnFocused={isOnFocused} searchList={searchList} />
+      <SearchHistoryBox
+        value={value}
+        isOnFocused={isOnFocused}
+        searchList={searchList}
+        isKeySelected={isAutoSearch}
+        selectedIndex={focusIndex}
+      />
     </SSearchArea>
   );
 }

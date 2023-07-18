@@ -1,21 +1,37 @@
 import React from 'react';
 import styled from 'styled-components';
 import { ISearchItem } from '../../../Redux/Slice/searchSlice';
+import Icon from '../../Atoms/Icons';
 
 interface ISearchHistoryBox {
   value: string;
   isOnFocused: boolean;
   searchList: ISearchItem[] | undefined;
+  isKeySelected: boolean;
+  selectedIndex: number;
 }
-export default function SearchHistoryBox({ searchList, value, isOnFocused }: ISearchHistoryBox) {
+export default function SearchHistoryBox({
+  searchList,
+  value,
+  isOnFocused,
+  isKeySelected,
+  selectedIndex,
+}: ISearchHistoryBox) {
   return (
     <SSearchHistoryBox className={isOnFocused ? '' : 'a11y-hidden'}>
       <SInner>
         <STopBox>
-          <SSpan>{value && searchList ? '추천 검색어' : '최근 검색어'}</SSpan>
+          <SListDiv>
+            <SSpan>{value && searchList ? '추천 검색어' : '최근 검색어'}</SSpan>
+          </SListDiv>
           {value ? (
             searchList && searchList.length > 0 ? (
-              searchList.map((item, index) => <p key={item.sickCd + index}>{item.sickNm}</p>)
+              searchList?.map((item, index) => (
+                <SListItem isKeySelected={index === selectedIndex}>
+                  <Icon icon="search" size={15} color="#6a737b" viewBox="2 2 20 20" />
+                  <p key={item.sickCd + index}>{item.sickNm}</p>
+                </SListItem>
+              ))
             ) : (
               <SPara>검색어 없음</SPara>
             )
@@ -34,7 +50,6 @@ export default function SearchHistoryBox({ searchList, value, isOnFocused }: ISe
 const SSearchHistoryBox = styled.div``;
 const SInner = styled.div`
   position: absolute;
-  padding: 20px 25px;
   border-radius: 20px;
   background-color: #fff;
   width: 100%;
@@ -43,11 +58,23 @@ const SInner = styled.div`
   box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
 `;
 const STopBox = styled.div`
-  padding-bottom: 20px;
+  padding: 20px 0 20px 0;
 `;
 const SBottomBox = styled.div<{ value: string }>`
-  padding-top: 20px;
+  padding: 20px;
+
   display: ${({ value }) => (value ? 'none' : 'block')};
+`;
+const SListDiv = styled.div`
+  display: flex;
+  padding: 10px 20px;
+`;
+const SListItem = styled(SListDiv)<{ isKeySelected: boolean }>`
+  background-color: ${({ isKeySelected }) => (isKeySelected ? '#dbe4eb' : '#fff')};
+  padding: 10px 25px;
+  > p {
+    margin-left: 10px;
+  }
 `;
 const SSpan = styled.span`
   color: #6a737b;
@@ -55,5 +82,5 @@ const SSpan = styled.span`
   line-height: 1;
 `;
 const SPara = styled.p`
-  margin: 10px 0;
+  padding: 10px 20px;
 `;
