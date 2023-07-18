@@ -10,8 +10,9 @@ interface ISearchForm {
   isOnFocused: boolean;
   inputRef: React.RefObject<HTMLInputElement>;
   onHandler: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  handleResetValue: () => void;
 }
-export default function SearchForm({ value, isOnFocused, inputRef, onHandler }: ISearchForm) {
+export default function SearchForm({ value, isOnFocused, inputRef, onHandler, handleResetValue }: ISearchForm) {
   return (
     <SForm onSubmit={(e: React.FormEvent) => e.preventDefault()} focused={isOnFocused}>
       <SLabel>
@@ -21,7 +22,7 @@ export default function SearchForm({ value, isOnFocused, inputRef, onHandler }: 
         </SInputMsgBox>
         <SInputBox hasvalue={!!value} focused={isOnFocused}>
           <Input type="text" onChange={onHandler} value={value} ref={inputRef} />
-          <CloseButton />
+          <CloseButton onClick={() => handleResetValue()} />
         </SInputBox>
       </SLabel>
       <QuestionButton />

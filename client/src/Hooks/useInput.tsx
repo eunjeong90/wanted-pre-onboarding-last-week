@@ -5,7 +5,7 @@ const useInputs = (initValue: string) => {
   const onHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     setValue(e.target.value);
   };
-  return [value, onHandler] as const;
+  return [value, setValue, onHandler] as const;
 };
 
 export default useInputs;
