@@ -1,6 +1,6 @@
 import React from 'react';
-import Button, { IButton } from '../Atoms/Button';
-import Icon from '../Atoms/Icons';
+import Button, { IButton } from '../../Atoms/Button';
+import Icon from '../../Atoms/Icons';
 
 export default function CloseButton({ size, ...props }: IButton) {
   return (

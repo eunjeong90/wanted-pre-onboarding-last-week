@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 import { styled } from 'styled-components';
 
-export default function Wrapper({ children }: { children: React.ReactNode }) {
+export default function Wrapper({ children }: { children: ReactNode }) {
   return <SWrapper>{children}</SWrapper>;
 }
 
