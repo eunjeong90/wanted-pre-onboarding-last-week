@@ -13,6 +13,7 @@ export default function SearchArea() {
   const [value, setValue, onHandler] = useInput('');
   const [searchList, setSearchList] = useState<ISearchItem[] | undefined>([]);
   const [isFocusRef, setIsFocusRef] = useState(false);
+  const [isResultSelected, setIsResultSelected] = useState(false);
 
   const getSearchList = () => {
     if (value !== '') {
@@ -38,16 +39,24 @@ export default function SearchArea() {
     setIsFocusRef(true);
   };
   const handleBlur = () => {
-    setIsFocusRef(false);
+    if (isResultSelected) {
+      setIsFocusRef(false);
+    }
   };
   const handleResetValue = () => {
     setIsFocusRef(true);
     setValue('');
   };
   const handleClickWord = (word: string) => {
-    setIsFocusRef(true);
+    setIsResultSelected(true);
     setValue(word);
   };
+  useEffect(() => {
+    if (isResultSelected) {
+      setIsResultSelected(false);
+      setIsFocusRef(false);
+    }
+  }, [isResultSelected]);
 
   const getKeyword = (index: number) => (searchList && searchList[index]?.sickNm) || '';
   const maxIndex = searchList?.length || 0;
