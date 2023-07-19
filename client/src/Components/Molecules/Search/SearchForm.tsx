@@ -1,4 +1,4 @@
-import React, { MutableRefObject } from 'react';
+import React from 'react';
 import styled, { css } from 'styled-components';
 import Icon from '../../Atoms/Icons';
 import Input from '../../Atoms/Input';
@@ -7,8 +7,7 @@ import QuestionButton from '../Buttons/QuestionButton';
 
 interface ISearchForm {
   value: string;
-  isFocusRef: MutableRefObject<boolean>;
-  inputRef: React.RefObject<HTMLInputElement>;
+  isFocusRef: boolean;
   onHandler: (e: React.ChangeEvent<HTMLInputElement>) => void;
   handleResetValue: () => void;
   handleFocus: () => void;
@@ -17,28 +16,20 @@ interface ISearchForm {
 export default function SearchForm({
   value,
   isFocusRef,
-  inputRef,
   onHandler,
   handleResetValue,
   handleFocus,
   handleBlur,
 }: ISearchForm) {
   return (
-    <SForm onSubmit={(e: React.FormEvent) => e.preventDefault()} isOnFocused={isFocusRef.current}>
+    <SForm onSubmit={(e: React.FormEvent) => e.preventDefault()} isOnFocused={isFocusRef}>
       <SLabel>
-        <SInputMsgBox isOnFocused={isFocusRef.current} hasvalue={!!value}>
+        <SInputMsgBox isOnFocused={isFocusRef} hasvalue={!!value}>
           <Icon icon="search" size={15} color="#6a737b" viewBox="2 2 20 20" />
           <span>질환명을 입력해 주세요.</span>
         </SInputMsgBox>
-        <SInputBox hasvalue={!!value} isOnFocused={isFocusRef.current}>
-          <Input
-            type="text"
-            onChange={onHandler}
-            value={value}
-            ref={inputRef}
-            onFocus={handleFocus}
-            onBlur={handleBlur}
-          />
+        <SInputBox hasvalue={!!value} isOnFocused={isFocusRef}>
+          <Input type="text" onChange={onHandler} value={value} onFocus={handleFocus} onBlur={handleBlur} />
           <CloseButton onClick={handleResetValue} />
         </SInputBox>
       </SLabel>

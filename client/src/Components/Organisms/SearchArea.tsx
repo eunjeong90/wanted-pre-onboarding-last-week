@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { styled } from 'styled-components';
 import { useAppDispatch } from '../../Redux/store';
 import { ISearchItem, getSearchQuery } from '../../Redux/Slice/searchSlice';
@@ -12,6 +12,7 @@ export default function SearchArea() {
   const dispatch = useAppDispatch();
   const [value, setValue, onHandler] = useInput('');
   const [searchList, setSearchList] = useState<ISearchItem[] | undefined>([]);
+  const [isFocusRef, setIsFocusRef] = useState(false);
 
   const getSearchList = () => {
     if (value !== '') {
@@ -33,26 +34,21 @@ export default function SearchArea() {
     searchDebounce();
   }, [value]);
 
-  const inputRef = useRef<HTMLInputElement>(null);
-  const isFocusRef = useRef(false);
-
   const handleFocus = () => {
-    isFocusRef.current = true;
-    inputRef.current?.focus();
+    setIsFocusRef(true);
   };
   const handleBlur = () => {
-    isFocusRef.current = false;
-    inputRef.current?.blur();
+    setIsFocusRef(false);
   };
   const handleResetValue = () => {
+    setIsFocusRef(true);
     setValue('');
-    isFocusRef.current = true;
-    inputRef.current?.focus();
   };
   const handleClickWord = (word: string) => {
-    isFocusRef.current = true;
+    setIsFocusRef(true);
     setValue(word);
   };
+
   const getKeyword = (index: number) => (searchList && searchList[index]?.sickNm) || '';
   const maxIndex = searchList?.length || 0;
   const { focusIndex } = useKeyboardNavigation({
@@ -65,13 +61,12 @@ export default function SearchArea() {
       <SearchForm
         value={value}
         onHandler={onHandler}
-        inputRef={inputRef}
         isFocusRef={isFocusRef}
         handleResetValue={handleResetValue}
         handleFocus={handleFocus}
         handleBlur={handleBlur}
       />
-      {isFocusRef.current && (
+      {isFocusRef && (
         <SearchHistoryBox
           value={value}
           setValue={setValue}
