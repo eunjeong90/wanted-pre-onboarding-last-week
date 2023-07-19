@@ -1,58 +1,37 @@
-import { useEffect, useState, useCallback, Dispatch, SetStateAction } from 'react';
+import { useState, useEffect } from 'react';
 
-interface KeyboardNavigationParams {
-  maxIndex: number;
-  getKeyword: (index: number) => string;
-}
+export function useKeyboardNavigation<T>(
+  items: T[] | undefined,
+  initialIndex: number = 0,
+  onEnter: (index: number) => void,
+): { selectedIndex: number } {
+  const [selectedIndex, setSelectedIndex] = useState(initialIndex);
 
-interface KeyboardNavigationReturn {
-  focusIndex: number;
-  isAutoSearch: boolean;
-  autoSearchKeyword: string;
-  setFocusIndex: Dispatch<SetStateAction<number>>;
-  setIsAutoSearch: Dispatch<SetStateAction<boolean>>;
-}
-
-function useKeyboardNavigation({
-  maxIndex,
-  // onEnter,
-  getKeyword,
-}: KeyboardNavigationParams): KeyboardNavigationReturn {
-  const [focusIndex, setFocusIndex] = useState<number>(-2);
-  const [isAutoSearch, setIsAutoSearch] = useState<boolean>(false);
-  const [autoSearchKeyword, setAutoSearchKeyword] = useState<string>('');
-
-  const onKeyDown = useCallback(
-    (event: KeyboardEvent) => {
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (!items) {
+        return;
+      }
       switch (event.key) {
-        case 'ArrowDown':
-          setIsAutoSearch(true);
-          setFocusIndex((prevIndex) => (prevIndex < maxIndex ? prevIndex + 1 : prevIndex));
-          setAutoSearchKeyword(getKeyword(focusIndex + 1));
-          break;
         case 'ArrowUp':
-          setFocusIndex((prevIndex) => (prevIndex > 0 ? prevIndex - 1 : 0));
-          setAutoSearchKeyword(getKeyword(focusIndex - 1));
+          setSelectedIndex((prevIndex) => (prevIndex > 0 ? prevIndex - 1 : items.length - 1));
           break;
-        case 'Escape':
-          setAutoSearchKeyword('');
-          setIsAutoSearch(false);
+        case 'ArrowDown':
+          setSelectedIndex((prevIndex) => (prevIndex < items.length - 1 ? prevIndex + 1 : 0));
+          break;
+        case 'Enter':
+          onEnter(selectedIndex);
           break;
         default:
           break;
       }
-    },
-    [maxIndex, getKeyword, focusIndex],
-  );
-
-  useEffect(() => {
-    window.addEventListener('keydown', onKeyDown);
-    return () => {
-      window.removeEventListener('keydown', onKeyDown);
     };
-  }, [onKeyDown]);
 
-  return { focusIndex, isAutoSearch, autoSearchKeyword, setFocusIndex, setIsAutoSearch };
+    document.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [items, onEnter, selectedIndex]);
+
+  return { selectedIndex };
 }
-
-export default useKeyboardNavigation;

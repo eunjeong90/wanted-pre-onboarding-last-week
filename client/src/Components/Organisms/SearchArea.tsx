@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { styled } from 'styled-components';
 import { useAppDispatch } from '../../Redux/store';
-import { ISearchItem, getSearchQuery } from '../../Redux/Slice/searchSlice';
+import { ISearchItem, addSearchHistory, getSearchQuery } from '../../Redux/Slice/searchSlice';
 import useDebounce from '../../Hooks/useDebounce';
 import useInput from '../../Hooks/useInput';
-import useKeyboardNavigation from '../../Hooks/useKeyboardNavigate';
 import SearchHistoryBox from '../Molecules/Search/SearchHistoryBox';
 import SearchForm from '../Molecules/Search/SearchForm';
+import { useKeyboardNavigation } from '../../Hooks/useKeyboardNavigate';
 
 export default function SearchArea() {
   const dispatch = useAppDispatch();
@@ -50,7 +50,9 @@ export default function SearchArea() {
   const handleClickWord = (word: string) => {
     setIsResultSelected(true);
     setValue(word);
+    dispatch(addSearchHistory(word));
   };
+
   useEffect(() => {
     if (isResultSelected) {
       setIsResultSelected(false);
@@ -58,12 +60,15 @@ export default function SearchArea() {
     }
   }, [isResultSelected]);
 
-  const getKeyword = (index: number) => (searchList && searchList[index]?.sickNm) || '';
-  const maxIndex = searchList?.length || 0;
-  const { focusIndex } = useKeyboardNavigation({
-    maxIndex,
-    getKeyword,
-  });
+  const handleEnter = (index: number) => {
+    if (isFocusRef && searchList) {
+      if (index >= 0 && index < searchList.length) {
+        handleClickWord(searchList[index].sickNm);
+      }
+    }
+  };
+
+  const { selectedIndex } = useKeyboardNavigation(searchList, 0, handleEnter);
 
   return (
     <SSearchArea>
@@ -80,7 +85,7 @@ export default function SearchArea() {
           value={value}
           setValue={setValue}
           searchList={searchList}
-          selectedIndex={focusIndex}
+          selectedIndex={selectedIndex}
           handleClickWord={handleClickWord}
         />
       )}
