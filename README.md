@@ -33,6 +33,10 @@
 4.client 경로로 이동 후 설치 실행 : 
 
     cd client
+
+    client 폴더에 .env 파일을 만들어 아래 내용을 추가해주세요.
+    REACT_APP_BASE_URL = https://superb-neat-blade.glitch.me
+    
     npm install
     npm start
 
