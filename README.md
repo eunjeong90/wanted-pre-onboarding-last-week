@@ -1,5 +1,7 @@
 # wanted-pre-onboarding-last-week
 
+## 🌈 클릭하면 배포된 주소로 이동해요 **[원티드 프리온보딩 인턴십 개인과제](https://wanted-pre-onboarding-last-week-mlch.vercel.app/)** 🌈
+
 ### Introduction 👩🏻‍💻 
 해당 레파지토리는 원티드 프리온보딩 인턴십 마지막 과제로, **[한국임상정보](https://clinicaltrialskorea.com/)** 사이트의 검색 영역을 클론코딩한 프로젝트입니다.
 
@@ -12,10 +14,32 @@
 <img src="https://img.shields.io/badge/React-61DAFB?style=for-the-badge&logo=React&logoColor=black" /> <img src="https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=TypeScript&logoColor=white"/>  
 <img src="https://img.shields.io/badge/redux-%23593d88.svg?style=for-the-badge&logo=redux&logoColor=white" /> <img src="https://img.shields.io/badge/StyledComponents-DB7093?style=for-the-badge&logo=StyledComponents&logoColor=white" /> 
 
+### Getting Started
+#### 해당 저장소의 server는 https://github.com/walking-sunset/assignment-api 의 내용을 clone한 것입니다.
+
+1.깃 레파지토리 클론 : 
+
+    git clone https://github.com/eunjeong90/wanted-pre-onboarding-last-week.git
+
+2.설치 경로로 이동 :
+
+    cd wanted-pre-onboarding-last-week
+3.server 경로로 이동 후 설치 실행 :
+
+    cd server
+    npm install
+    npm start
+
+4.client 경로로 이동 후 설치 실행 : 
+
+    cd client
+    npm install
+    npm start
+
+
+
 
 ### Main Feature 👀
-### **검색어 추천 기능**
-`src/components/Main.tsx`
 
 ### **In-Memory Cashing**
 `src/Redux/Slice/searchSlice.ts`
