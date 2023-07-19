@@ -4,6 +4,8 @@ import Icon from '../../Atoms/Icons';
 import Input from '../../Atoms/Input';
 import CloseButton from '../Buttons/CloseButton';
 import QuestionButton from '../Buttons/QuestionButton';
+import { addSearchHistory } from '../../../Redux/Slice/searchSlice';
+import { useAppDispatch } from '../../../Redux/store';
 
 interface ISearchForm {
   value: string;
@@ -21,8 +23,15 @@ export default function SearchForm({
   handleFocus,
   handleBlur,
 }: ISearchForm) {
+  const dispatch = useAppDispatch();
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (value) {
+      dispatch(addSearchHistory(value));
+    }
+  };
   return (
-    <SForm onSubmit={(e: React.FormEvent) => e.preventDefault()} isOnFocused={isFocusRef}>
+    <SForm onSubmit={handleSubmit} isOnFocused={isFocusRef}>
       <SLabel>
         <SInputMsgBox isOnFocused={isFocusRef} hasvalue={!!value}>
           <Icon icon="search" size={15} color="#6a737b" viewBox="2 2 20 20" />
@@ -33,7 +42,7 @@ export default function SearchForm({
           <CloseButton onClick={handleResetValue} />
         </SInputBox>
       </SLabel>
-      <QuestionButton />
+      <QuestionButton onClick={handleSubmit} />
     </SForm>
   );
 }

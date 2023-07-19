@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { createAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { createHttpClient } from '../../Services/httpClient';
 import searchService from '../../Services/searchService';
 import { RootState } from '../store';
@@ -46,6 +46,7 @@ export const getSearchQuery = createAsyncThunk(
     }
   },
 );
+export const addSearchHistory = createAction<string>('search/addHistory');
 
 const searchSlice = createSlice({
   name: 'search',
@@ -70,8 +71,10 @@ const searchSlice = createSlice({
           expireTime.setMinutes(expireTime.getMinutes() + 5);
           state.data.push({ query: action.meta.arg, list: action.payload, expireTime: expireTime.toISOString() });
         }
-        state.history.unshift(action.meta.arg);
-        state.history = state.history.slice(0, 5);
+      })
+      .addCase(addSearchHistory, (state, action) => {
+        const newHistory = [action.payload, ...state.history.filter((item) => item !== action.payload)];
+        state.history = newHistory.slice(0, 5);
       });
   },
 });

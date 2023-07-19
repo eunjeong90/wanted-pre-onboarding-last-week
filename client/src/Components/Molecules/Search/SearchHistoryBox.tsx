@@ -19,8 +19,8 @@ interface ISearchHistoryBox {
   handleClickWord: (word: string) => void;
 }
 export default function SearchHistoryBox({ searchList, value, selectedIndex, handleClickWord }: ISearchHistoryBox) {
-  const { searchHistory, searchStatus } = useAppSelector((state: RootState) => ({
-    searchHistory: state.search.history,
+  const { addSearchHistory, searchStatus } = useAppSelector((state: RootState) => ({
+    addSearchHistory: state.search.history,
     searchStatus: state.search.status,
   }));
 
@@ -52,8 +52,8 @@ export default function SearchHistoryBox({ searchList, value, selectedIndex, han
             )
           ) : (
             <div>
-              {searchHistory ? (
-                searchHistory.map((his, index) => (
+              {addSearchHistory ? (
+                addSearchHistory.map((his, index) => (
                   <SListItem key={his + index} onClick={() => handleClickWord(his)}>
                     <Icon icon="search" size={15} color="#6a737b" viewBox="2 2 20 20" />
                     <p>{his}</p>
