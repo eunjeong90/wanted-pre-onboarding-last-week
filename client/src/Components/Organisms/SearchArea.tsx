@@ -68,7 +68,7 @@ export default function SearchArea() {
     }
   };
 
-  const { selectedIndex } = useKeyboardNavigation(searchList, 0, handleEnter);
+  const { selectedIndex } = useKeyboardNavigation(searchList, handleEnter);
 
   return (
     <SSearchArea>
