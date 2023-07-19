@@ -2,16 +2,24 @@ import { useState, useEffect } from 'react';
 
 export function useKeyboardNavigation<T>(
   items: T[] | undefined,
-  initialIndex: number = 0,
   onEnter: (index: number) => void,
 ): { selectedIndex: number } {
-  const [selectedIndex, setSelectedIndex] = useState(initialIndex);
+  const [selectedIndex, setSelectedIndex] = useState(-1);
+
+  useEffect(() => {
+    if (items && items.length > 0) {
+      setSelectedIndex(0);
+    } else {
+      setSelectedIndex(-1);
+    }
+  }, [items]);
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (!items) {
+      if (!items || event.isComposing) {
         return;
       }
+
       switch (event.key) {
         case 'ArrowUp':
           setSelectedIndex((prevIndex) => (prevIndex > 0 ? prevIndex - 1 : items.length - 1));
@@ -31,7 +39,7 @@ export function useKeyboardNavigation<T>(
     return () => {
       document.removeEventListener('keydown', handleKeyDown);
     };
-  }, [items, onEnter, selectedIndex]);
+  }, [items, onEnter]);
 
   return { selectedIndex };
 }
