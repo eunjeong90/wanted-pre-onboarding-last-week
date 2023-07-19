@@ -27,32 +27,32 @@ export default function SearchArea() {
     }
   };
 
-  const searchDebounce = useDebounce(getSearchList, 300);
+  const searchDebounce = useDebounce(getSearchList, 500);
 
   useEffect(() => {
     searchDebounce();
   }, [value]);
 
   const inputRef = useRef<HTMLInputElement>(null);
-  const [isOnFocused, setIsOnFocused] = useState(false);
-  useEffect(() => {
-    const handleFocus = () => setIsOnFocused(true);
-    const handleBlur = () => setIsOnFocused(false);
+  const isFocusRef = useRef(false);
 
-    const inputElement = inputRef.current;
-    if (inputElement) {
-      inputElement.addEventListener('focus', handleFocus);
-      inputElement.addEventListener('blur', handleBlur);
-    }
-
-    return () => {
-      if (inputElement) {
-        inputElement.removeEventListener('focus', handleFocus);
-        inputElement.removeEventListener('blur', handleBlur);
-      }
-    };
-  }, []);
-
+  const handleFocus = () => {
+    isFocusRef.current = true;
+    inputRef.current?.focus();
+  };
+  const handleBlur = () => {
+    isFocusRef.current = false;
+    inputRef.current?.blur();
+  };
+  const handleResetValue = () => {
+    setValue('');
+    isFocusRef.current = true;
+    inputRef.current?.focus();
+  };
+  const handleClickWord = (word: string) => {
+    isFocusRef.current = true;
+    setValue(word);
+  };
   const getKeyword = (index: number) => (searchList && searchList[index]?.sickNm) || '';
   const maxIndex = searchList?.length || 0;
   const { focusIndex } = useKeyboardNavigation({
@@ -60,20 +60,26 @@ export default function SearchArea() {
     getKeyword,
   });
 
-  const handleResetValue = () => {
-    setValue('');
-  };
-
   return (
     <SSearchArea>
       <SearchForm
         value={value}
-        isOnFocused={isOnFocused}
         onHandler={onHandler}
         inputRef={inputRef}
+        isFocusRef={isFocusRef}
         handleResetValue={handleResetValue}
+        handleFocus={handleFocus}
+        handleBlur={handleBlur}
       />
-      <SearchHistoryBox value={value} isOnFocused={isOnFocused} searchList={searchList} selectedIndex={focusIndex} />
+      {isFocusRef.current && (
+        <SearchHistoryBox
+          value={value}
+          setValue={setValue}
+          searchList={searchList}
+          selectedIndex={focusIndex}
+          handleClickWord={handleClickWord}
+        />
+      )}
     </SSearchArea>
   );
 }
