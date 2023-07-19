@@ -103,7 +103,7 @@ const SListDiv = styled.div<{ row?: boolean }>`
   padding: 10px 20px;
 `;
 const SListItem = styled(SListDiv)<{ isKeySelected?: boolean }>`
-  background-color: ${({ isKeySelected }) => (isKeySelected ? '#dbe4eb' : '#fff')};
+  background-color: ${({ isKeySelected }) => (isKeySelected ? '#eff4f9' : '#fff')};
   padding: 10px 25px;
   display: flex;
   > p {
